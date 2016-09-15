@@ -1,8 +1,16 @@
 const getValueByPosition = require("./getValueByPosition");
+const compare = require("./compare");
 const DIRECTIONS = require("./directions.const");
 
-const dir = (o) => JSON.stringify(o);
-
+/**
+ * findBestPath - Find best Path at given position
+ * criteria: longest path, highest slope
+ *
+ * @param {Object}   position given position
+ * @param {Array}    map      map
+ *
+ * @return {Object}  Best path
+ */
 function findBestPath({
   position, // {x, y};
   map // ref
@@ -39,12 +47,12 @@ function findBestPath({
     });
 
     if (!haveDirection) {
-      const newSlope = originalHeight - currentHeight;
-      const pathLength = step;
-      if (pathLength > maxPath.length ||
-        (pathLength === maxPath.length && newSlope > maxPath.slope)) {
-        maxPath.length = pathLength;
-        maxPath.slope = newSlope;
+      const newPath = {
+        slope: originalHeight - currentHeight,
+        length: step
+      };
+      if (compare(newPath, maxPath)) {
+        Object.assign(maxPath, newPath);
       }
     }
 
@@ -53,8 +61,8 @@ function findBestPath({
 
   do {
     // console.log(`Step: ${step} # nextPoints: ${dir(possiblePaths)}`);
-    possiblePaths = possiblePaths.reduce(findPossiblePath, []);
     step++;
+    possiblePaths = possiblePaths.reduce(findPossiblePath, []);
   } while (possiblePaths.length > 0);
   return maxPath;
 }

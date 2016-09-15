@@ -1,13 +1,17 @@
+// Usage: node index.js ../data/map.txt
 const path = require("path");
 
 const findBestPath = require("./findBestPath");
 const readMap = require("./readMap");
+const compare = require("./compare");
 
-const map = readMap(path.join(__dirname, '../data/map.txt'));
+let file = process.argv[process.argv.length - 1];
+const map = readMap(path.join(__dirname, file));
+const maxPath = {length: 0, slope: 0};
 
 map.forEach((row, y) => row.forEach((point, x) => {
-  console.log(`${x},${y}: ${JSON.stringify(findBestPath({
-    position: {x, y},
-    map
-  }))}`);
+  const path = findBestPath({position: {x, y}, map});
+  if (compare(path, maxPath)) Object.assign(maxPath, path);
 }));
+
+console.log(maxPath);
