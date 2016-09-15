@@ -3,9 +3,9 @@ const fs = require("fs");
 /**
  * readMap - read the file and return a map
  *
- * @param {type} file path
+ * @param {path} file path
  *
- * @return {type} map
+ * @return {Array} map Array of points
  */
 function readMap(file) {
   const content = fs.readFileSync(file).toString().split("\n");
