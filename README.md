@@ -2,7 +2,9 @@ Trying to solve http://geeks.redmart.com/2015/01/07/skiing-in-singapore-a-coding
 
 Require NodeJS 6+
 
-Unoptimised time: 5.34s
+Iteratively - Unoptimized: 5.34s
+Recursively - Unoptimized: 10.85s
+Recursively - Cached: 2.56s
 
 Usage: (at root) node src/index.js ../data/map.txt
 
