@@ -24,6 +24,19 @@ class OOA {
   getPoint(position) {
     return getValueByPosition(position, this.map);
   }
+  * getDirections(position, height) {
+    for (let direction of DIRECTIONS) {
+      const {x: nX, y: nY} = direction;
+      const nextPosition = {
+        x: position.x + nX,
+        y: position.y + nY
+      };
+      const nextPoint = this.getPoint(nextPosition);
+      if (nextPoint !== false && nextPoint.height < height) {
+        yield nextPosition;
+      }
+    }
+  }
 
   findBestPath(position) {
     this._stepCounter++;
@@ -31,18 +44,13 @@ class OOA {
     const currentHeight = currentPoint.height;
     // console.log(`${logPrefix}findBestPath ${JSON.stringify(position)} - ${currentHeight}`);
     if (currentPoint.path === null) {
-      currentPoint.path = DIRECTIONS.reduce((maxPath, {x: nX, y: nY}) => {
-        const nextPosition = {
-          x: position.x + nX,
-          y: position.y + nY
-        };
-        const nextPoint = this.getPoint(nextPosition);
-        if (nextPoint !== false && nextPoint.height < currentHeight) {
-          const nextPath = this.findBestPath(nextPosition);
-          if (this.compare(nextPath, maxPath)) return nextPath;
-        }
-        return maxPath;
-      }, Object.assign({}, DEFAULT_PATH, {lowestHeight: currentHeight}));
+      let maxPath = Object.assign({}, DEFAULT_PATH,
+                                                {lowestHeight: currentHeight});
+      for (let nextPoint of this.getDirections(position, currentHeight)) {
+        const nextPath = this.findBestPath(nextPoint);
+        if (this.compare(nextPath, maxPath)) maxPath = nextPath;
+      }
+      currentPoint.path = maxPath;
     }
     return {
       length: currentPoint.path.length + 1,
