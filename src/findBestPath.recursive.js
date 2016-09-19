@@ -16,6 +16,7 @@ function findBestPath({
   , map // ref
   // , logPrefix = ''
 }) {
+  global.stepCounter++;
   const currentPoint = getValueByPosition(position, map);
   const currentHeight = currentPoint.height;
   // console.log(`${logPrefix}findBestPath ${JSON.stringify(position)} - ${currentHeight}`);
